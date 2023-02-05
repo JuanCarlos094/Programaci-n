@@ -1,0 +1,180 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+public class Contacto{
+    private String name;
+    private String phoneNumber;
+    public Contacto(String name,String phoneNumber){
+        this.name=name;
+        this.phoneNumber=phoneNumber;
+    }
+
+    public String getName() {
+
+        return name;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+    public static Contacto createContract(String nombre, String phoneNumber){
+        return new Contacto(nombre, phoneNumber);
+    }
+}
+class TelefonoMovil{
+    private String myNumber;
+    private ArrayList<Contacto> myContacts;
+
+    public TelefonoMovil(){
+        this.myNumber=myNumber;
+        this.myContacts= new ArrayList<Contacto>();
+    }
+    private int findContact(Contacto contacto){
+      return  this.myContacts.indexOf(contacto);
+}
+    int findContact(String NameContact){
+        for(int i=0; i<this.myContacts.size();i++){
+            Contacto contacto = this.myContacts.get(i);
+            if(contacto.getName().equalsIgnoreCase(NameContact)){
+                return i;
+            }
+        }
+        return  -1;
+}
+    public boolean addNewContact(Contacto addcontacto){
+        if(findContact(addcontacto.getName())>=0){
+            System.out.println("El contacto ya existe");
+            return false;
+        }
+        myContacts.add(addcontacto);
+        return true;
+}
+    public boolean updateContact(String oldContact, Contacto newContact){
+        int BuscaPosicion=findContact(String.valueOf(oldContact));
+        if(BuscaPosicion < 0){
+            System.out.println(oldContact+" no se encuentra el contacto en la agenda.");
+            return false;
+        }
+        if(findContact(newContact.getName()) != -1){
+            System.out.println("El contacto "+newContact.getName()+" ya existe.");
+            return false;
+        }
+        this.myContacts.set(BuscaPosicion, newContact);
+        System.out.println(oldContact+" se ha actualizado con "+newContact.getName());
+        return true;
+    }
+    public boolean removeContact(int deletContact){
+        int BuscaContact=findContact(String.valueOf(deletContact));
+            if(BuscaContact <0){
+        System.out.println(deletContact+" no se encuentra en la lista de contactos.");
+        return false;
+    }
+    this.myContacts.remove(BuscaContact);
+        System.out.println("El contacto "+deletContact+" se ha eliminado correctamente.");
+        return true;
+    }
+    public Contacto queryContact(String name){
+        int position= findContact(name);
+        if(position >= 0){
+            return this.myContacts.get(position);
+        }
+        return null;
+    }
+    public void printContacts(){
+        System.out.println("Lista de contactos:");
+        for(int i =0; i < myContacts.size(); i++){
+            System.out.println((i+1)+". "+myContacts.get(i).getName()+"->"+myContacts.get(i).getPhoneNumber());
+        }
+    }
+}
+
+class Main {
+        public static void main(String[] args) {
+            Scanner scan = new Scanner(System.in);
+            TelefonoMovil telefono = new TelefonoMovil();
+            int opcion;
+            do{
+                System.out.println("0 Salir");
+                System.out.println("1 Imprimir contactos");
+                System.out.println("2 Agregar nuevo contacto");
+                System.out.println("3 Actualizar un contacto existente");
+                System.out.println("4 Eliminar contacto de la lista");
+                System.out.println("5 Buscar/encontrar contacto por nombre");
+                System.out.println("6 Volver a imprimir la lista de opciones");
+                System.out.print("Elige una opción: \n");
+                opcion = scan.nextInt();
+                scan.nextLine();
+                switch (opcion) {
+                    case 0:
+                        System.out.println("Adiós");
+                        break;
+                    case 1:
+                        telefono.printContacts();
+                        break;
+                    case 2:
+                        System.out.print("Ingrese nombre: ");
+                        String nombre = scan.nextLine();
+                        System.out.print("Ingrese número de teléfono: ");
+                        String telefonoNuevo = scan.nextLine();
+                        Contacto nuevoContacto = new Contacto(nombre, telefonoNuevo);
+                        boolean resultado = telefono.addNewContact(nuevoContacto);
+                        if (resultado) {
+                            System.out.println("Contacto agregado con éxito");
+                        } else {
+                            System.out.println("No se pudo agregar el contacto");
+                        }
+                        break;
+                    case 3:
+                        System.out.print("Ingrese nombre del contacto a actualizar: ");
+                        String nombreActualizar = scan.nextLine();
+                        int index = telefono.findContact(nombreActualizar);
+                        if (index >= 0) {
+                            System.out.print("Ingrese nuevo nombre: ");
+                            String nuevoNombre = scan.nextLine();
+                            System.out.print("Ingrese nuevo número de teléfono: ");
+                            String nuevoTelefono = scan.nextLine();
+                            Contacto nuevoContactoActualizado = new Contacto(nuevoNombre, nuevoTelefono);
+                            boolean resultadoActualizar = telefono.updateContact(nombreActualizar, nuevoContactoActualizado);
+                            if (resultadoActualizar) {
+                                System.out.println("Contacto actualizado con éxito");
+                            } else {
+                                System.out.println("Error al actualizar");
+                            }
+                        }else{
+                            System.out.println("Contacto no encontrado");
+                        }
+                        break;
+                    case 4:
+                        System.out.print("Ingrese el nombre del contacto a eliminar: ");
+                        String nombreAEliminar = scan.nextLine();
+                        int index2 = telefono.findContact(nombreAEliminar);
+                        if (index2 >= 0) {
+                            telefono.removeContact(index2);
+                            System.out.println("Contacto eliminado con éxito");
+                        } else {
+                            System.out.println("El contacto no se encontró");
+                        }
+                        break;
+                    case 5:
+                        System.out.print("Nombre del contacto a buscar: ");
+                        String nombre2 = scan.nextLine();
+                        Contacto contacto = telefono.queryContact(nombre2);
+                        if (contacto != null) {
+                            System.out.println("Información del contacto: ");
+                            System.out.println("Nombre: " + contacto.getName());
+                            System.out.println("Número de teléfono: " + contacto.getPhoneNumber());
+                        } else {
+                            System.out.println("El contacto no existe en la lista.");
+                        }
+                        break;
+                    case 6:
+                        // No hace nada, solo se usa para imprimir nuevamente las opciones.
+                        break;
+                    default:
+                        System.out.println("Opción inválida, por favor elige una opción válida.");
+                        break;
+
+                }
+            }while(opcion != 0);
+            System.out.println("Gracias por usar la app de Juan Carlos");
+            }
+        }
