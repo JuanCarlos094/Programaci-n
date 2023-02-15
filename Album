@@ -190,12 +190,11 @@ class Main {
                     }
                     break;
                 case 3:
-                if(it.next() != null){
-                    it.next();
+                if(it.hasPrevious()){ 
                     it.previous;
-                    System.out.println("Reporduciendo la canción "+it.previous());
+                    System.out.println("Reporduciendo la canción "+it.next());
                 }else{
-                    System.out.println("No hay ninguna canción sonando");
+                    System.out.println("No hay ninguna canción sonando"+it.previous());
                 }
                 break;
                 case 4:
